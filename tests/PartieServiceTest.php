@@ -35,10 +35,16 @@ class PartieServiceTest extends WebTestCase
       //  $this->assertTrue(true);
     //}
     
-    public function testLancerSortOK(){
-        $string = $this->partieService->lancerSort(1, 128, 130, 1 ,133);
-        $this->assertEquals("hypnose",$string);
+//    public function testLancerSortOK(){
+//        $string = $this->partieService->lancerSort(1, 126, 127);
+//        $this->assertEquals("hypnose",$string);
+//    }
+    
+    public function testDiviOK(){
+        $string = $this->partieService->simuDivi(1);
     }
+    
+    
    
      protected function setUp() {
         $this->partieService = self::bootKernel()->getContainer()->get("App\Service\PartieService");

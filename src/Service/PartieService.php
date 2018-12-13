@@ -160,13 +160,13 @@ class PartieService {
             self::sortHypnose($joueur, $targetid, $carteid3);
             $string =  "hypnose";
         }elseif(in_array(Carte::AILE_CHAUVE_SOURIS, $cartesSortJouees) && in_array(Carte::LAPIS_LAZULI, $cartesSortJouees)){
+            self::sortDivination($partie, $joueur->getId());
             $string = "Divination";
         }else{
             throw new Exception("Sort invalide");
         }
-           
-        $joueur->removeCarte($this->cr->find($carteid1));
-        $joueur->removeCarte($this->cr->find($carteid2));
+
+        
         $this->em->remove($this->cr->find($carteid1));
         $this->em->remove($this->cr->find($carteid2));
 
@@ -228,21 +228,24 @@ class PartieService {
         $carteDonnee = $this->cr->find($carte3id);
         $this->ajouterCarte($lanceur,$joueurTarget,$carteDonnee);
         $this->em->flush();
-
     }
     
-    private function sortDivination($partieid, $lanceurid){
+    private function sortDivination($partie, $lanceurid){
         $joueurs = $this->pr->getJoueurNonElimine($partie->getId());
         $cartesDesJoueurs = array();
         foreach($joueurs as $joueur){
-            if($joueur->getId() != $lanceur->getId()){
-                $cartesDesJoueurs[$joueur->getId()] = $joueur->getCartes();   
+            if($joueur->getId() != $lanceurid){
+                $cartesjoueur = array();
+                $cartes = $joueur->getCartes();
+                foreach($cartes as $carte){
+                    $cartesjoueur[] = $carte->getType();
+                } 
+                $cartesDesJoueurs[$joueur->getId()] = $cartesjoueur;   
             }
         }
         echo json_encode($cartesDesJoueurs);
-        $this->em->flush();
     }
-
+    
     private function volerCarte($target,$lanceur,$nbCarteAVoler){
         $cartesJoueurTarget = $target->getCartes();
         $carteArray = array();
